@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#081222">
+  <meta name="description" content="QuantFlow 公开研究预览：用可复现的历史实验，比较自适应仓位、固定趋势规则与半仓基准。展示真实汇总结果及研究边界。">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <title>QuantFlow · 公开研究预览</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#results">跳到研究结果</a>
+  <header class="site-header">
+    <div class="container header-content">
+      <a class="brand" href="#top" aria-label="QuantFlow 首页">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M3 17h6l4-11 6 21 4-13h6"/></svg></span>
+        <span>Quant<span class="brand-light">Flow</span><small>RESEARCH WORKSPACE</small></span>
+      </a>
+      <nav aria-label="主导航"><a href="#results">研究结果</a><a href="#process">研究流程</a><a href="#method">方法与边界</a></nav>
+      <a class="header-source" href="https://github.com/Tao0503/QuantFlow" target="_blank" rel="noopener noreferrer">项目源码 <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero container">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot"></span> PUBLIC RESEARCH PREVIEW</p>
+        <h1>让策略假设，<br>接受数据的检验<span class="accent">。</span></h1>
+        <p class="hero-description">从信号、参数搜索到成本后回测，记录结果，也记录没有成立的假设。这里展示 QuantFlow 的历史研究汇总。</p>
+        <div class="hero-actions"><a class="button button-coral" href="#results">查看实际结果 <span aria-hidden="true">↓</span></a><a class="button button-outline" href="https://github.com/Tao0503/QuantFlow/blob/main/GITHUB_DEPLOYMENT.md#本地运行" target="_blank" rel="noopener noreferrer">运行完整工作台 <span aria-hidden="true">↗</span></a></div>
+        <p class="hero-note">公开页面可切换汇总对照；参数搜索、组合回测和历史回放在本地版本运行。</p>
+      </div>
+      <aside class="hero-proof" aria-label="研究设计摘要">
+        <div class="proof-top"><span class="micro-label">THE RESEARCH QUESTION</span><span class="outline-badge">历史研究</span></div>
+        <h2>复杂规则，<br>是否比简单半仓更好？</h2>
+        <div class="proof-steps"><div><span>01</span><strong>先固定方法</strong><small>写清参数、区间、成本</small></div><div><span>02</span><strong>再比较结果</strong><small>同时展示收益、风险、暴露</small></div><div><span>03</span><strong>保留反证</strong><small>未超过基准，也如实记录</small></div></div>
+        <div class="proof-footer"><span class="status-dot"></span> 结论由实验决定，不预设盈利</div>
+      </aside>
+    </section>
+
+    <section id="results" class="results-section container" aria-labelledby="results-title">
+      <div class="section-heading"><div><p class="eyebrow dark">SAVED EXPERIMENTS</p><h2 id="results-title">看结果，也看对照</h2><p>同一资产、同一历史区间、同一成本口径。</p></div><span class="tag">2022—2025 · 事后历史检验</span></div>
+      <div class="result-shell">
+        <div class="result-controls">
+          <div class="control-group"><span class="control-label">研究规则</span><div class="study-tabs" role="group" aria-label="选择研究规则"><button type="button" data-study="sigmoid" aria-pressed="true">自适应仓位 <small>原始研究</small></button><button type="button" data-study="regime" aria-pressed="false">趋势与波动控制 <small>独立复核</small></button></div></div>
+          <div class="control-group asset-group"><span class="control-label">研究资产</span><div class="asset-tabs" role="group" aria-label="选择研究资产"><button type="button" data-symbol="SPY" aria-pressed="true">SPY <small>美股 ETF</small></button><button type="button" data-symbol="GLD" aria-pressed="false">GLD <small>黄金 ETF</small></button></div></div>
+        </div>
+        <div id="load-error" class="load-error" hidden><strong>研究摘要暂时无法读取。</strong><p>请通过 GitHub Pages 或本地静态服务器打开此页面，然后刷新。</p><button id="retry-load" class="button button-dark" type="button">重新读取</button></div>
+        <div id="result-body" aria-busy="true">
+          <div class="selection-line"><div><span class="selection-marker" aria-hidden="true"></span><h3 id="study-title">读取研究摘要…</h3><span id="asset-name" class="muted"></span></div><span id="source-label" class="source-label"></span></div>
+          <p id="strategy-description" class="strategy-description"></p>
+          <div class="legend"><span><i class="strategy-dot"></i><span id="strategy-legend">研究策略</span></span><span><i class="benchmark-dot"></i>固定半仓基准</span><span class="legend-note">数值均已扣除假设交易成本</span></div>
+          <div id="metrics-grid" class="metrics-grid" aria-label="策略与半仓指标对照"></div>
+          <div class="comparison-bottom">
+            <section class="bar-comparison" aria-labelledby="visual-title"><div class="chart-heading"><h4 id="visual-title">换一个角度比较</h4><label for="chart-metric">展示指标<select id="chart-metric"><option value="cagr_pct">年化收益</option><option value="sharpe">夏普比率</option><option value="max_drawdown_pct">最大回撤</option></select></label></div><div id="aggregate-chart" class="aggregate-chart"></div><p class="chart-footnote">条形仅表示当前指标大小，不是逐日净值曲线。</p></section>
+            <section class="finding" aria-labelledby="finding-title"><span class="micro-label">WHAT THE RESULT SAYS</span><h4 id="finding-title">这次研究说明了什么</h4><p id="finding-copy"></p><div id="uncertainty" class="uncertainty" hidden></div><a id="study-source" class="text-link" href="https://github.com/Tao0503/QuantFlow/blob/main/RESEARCH_PROTOCOL.md" target="_blank" rel="noopener noreferrer">查看研究方法 <span aria-hidden="true">↗</span></a></section>
+          </div>
+          <div class="result-source"><span id="coverage-note"></span><span>只展示四舍五入后的汇总结果</span></div>
+        </div>
+      </div>
+      <p class="research-disclosure">历史回溯不等于未来表现。原始研究的策略与参数在当前工作流中冻结后评估历史保留区间；后续趋势研究已经知道这段市场历史，不能当作新的独立样本外证据。</p>
+      <div id="live-announcement" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+      <noscript><p class="load-error">此页的交互对照需要 JavaScript。已保存的原始研究显示：SPY 与 GLD 的自适应仓位策略，在年化收益与夏普上均未超过固定半仓。<a href="https://github.com/Tao0503/QuantFlow">查看项目说明</a>。</p></noscript>
+    </section>
+
+    <section id="process" class="process-section container" aria-labelledby="process-title">
+      <div class="section-heading"><div><p class="eyebrow dark">A REPRODUCIBLE WORKFLOW</p><h2 id="process-title">把研究过程做成可操作的工作台</h2><p>公开页说明方法；完整本地版本承担实际计算。</p></div></div>
+      <ol class="pipeline"><li><span class="pipeline-number">01</span><h3>形成假设</h3><p>明确策略信号、仓位规则与对照组，先定义问题。</p><span class="pipeline-detail">规则与参数有据可查</span></li><li><span class="pipeline-number">02</span><h3>训练与选择</h3><p>GA 和随机搜索使用相同预算，训练后再做验证比较。</p><span class="pipeline-detail">时间区间与选参分开</span></li><li><span class="pipeline-number">03</span><h3>检查记账</h3><p>收盘信号在下一开盘模拟成交，计入费用与分红应收。</p><span class="pipeline-detail">整股 · 共享现金 · 无杠杆</span></li><li><span class="pipeline-number">04</span><h3>解释证据</h3><p>查看基准、敞口、回撤和不确定性，保留不利结果。</p><span class="pipeline-detail">报告、测试与方法留痕</span></li></ol>
+      <div class="workspace-feature"><div><span class="micro-label">IN THE LOCAL WORKSPACE</span><h3>创建实例 → 搜索参数 → 运行回测 → 回放决策</h3><p>本地应用支持 SPY、GLD 与 IEF 的单资产或共享现金组合研究，以及候选审批、完整风险指标和历史回放。</p></div><a class="button button-dark" href="https://github.com/Tao0503/QuantFlow/blob/main/GITHUB_DEPLOYMENT.md#本地运行" target="_blank" rel="noopener noreferrer">查看运行方式 <span aria-hidden="true">↗</span></a></div>
+    </section>
+
+    <section id="method" class="method-section container" aria-labelledby="method-title"><div class="section-heading"><div><p class="eyebrow dark">READ THE NUMBERS CORRECTLY</p><h2 id="method-title">这些数值是怎样算出来的</h2></div><a class="text-link" href="https://github.com/Tao0503/QuantFlow" target="_blank" rel="noopener noreferrer">阅读代码与文档 <span aria-hidden="true">↗</span></a></div><div class="method-grid"><article><span class="method-index">A</span><h3>同一成交假设</h3><p>日频、美元、仅做多、整股；每边佣金 1 个基点，滑点 5 个基点。信号在收盘产生，下一交易日开盘模拟成交。</p></article><article><span class="method-index">B</span><h3>把仓位放在收益旁边</h3><p>半仓基准目标为 50% 资产与 50% 现金，偏离 5 个百分点时调整。低回撤可能来自更多现金，不能直接视为择时成功。</p></article><article><span class="method-index">C</span><h3>明确简化与未知</h3><p>现金利率、无风险利率均为零；分红用除息后 35 个日历日到账代理。单一数据来源、存续资产选择与日线成交均有限制。</p></article></div><details class="scope-details"><summary>公开预览与完整应用有什么区别？<span aria-hidden="true">+</span></summary><div><p>这里的按钮切换已保存的汇总研究，不会启动参数搜索、计算新回测或提交订单。公开文件仅包含页面资源和少量衍生指标，不包含行情序列、逐日净值、成交记录、账户数据库或个人资料。</p><p>联合调参的交互记录保留在本地应用；本页不据这些验证期结果宣称独立测试优势。</p></div></details></section>
+  </main>
+  <footer class="site-footer"><div class="container"><div><a class="footer-brand" href="#top">QuantFlow<span>策略研究，从可解释到可复现。</span></a><p>历史研究展示 · 无真实交易接口 · 结论不代表未来盈利</p></div><a href="https://github.com/Tao0503/QuantFlow" target="_blank" rel="noopener noreferrer">GitHub 项目 <span aria-hidden="true">↗</span></a></div></footer>
+</body>
+</html>

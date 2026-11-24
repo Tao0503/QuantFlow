@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sigmoid-quant-research"
+version = "0.1.0"
+description = "Causal ETF backtesting and budget-matched evolutionary search"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.25", "pandas>=2.0", "matplotlib>=3.8"]
+
+[tool.setuptools.packages.find]
+include = ["quantlab*", "demo*"]

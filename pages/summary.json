@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "title": "QuantFlow 公开研究预览",
+  "data_scope": "仅包含四舍五入后的聚合研究指标，不含行情、净值序列、成交记录或个人数据。",
+  "period": {
+    "start": "2022-01-03",
+    "end": "2025-12-31",
+    "sessions": 1003
+  },
+  "assets": {
+    "SPY": "标普 500 ETF",
+    "GLD": "黄金 ETF"
+  },
+  "metric_units": {
+    "cagr_pct": "percent",
+    "sharpe": "ratio",
+    "max_drawdown_pct": "percent",
+    "annual_volatility_pct": "percent",
+    "mean_exposure_pct": "percent",
+    "annual_turnover": "times_per_year"
+  },
+  "conventions": {
+    "annual_sessions": 252,
+    "risk_free_rate": 0,
+    "cash_interest": 0,
+    "commission_bps_per_side": 1,
+    "slippage_bps_per_side": 5,
+    "dividend_payout_proxy_calendar_days": 35
+  },
+  "baselines": {
+    "SPY": {
+      "cagr_pct": 5.82,
+      "sharpe": 0.672,
+      "max_drawdown_pct": 12.47,
+      "annual_volatility_pct": 9.03,
+      "mean_exposure_pct": 51.19,
+      "annual_turnover": 0.17
+    },
+    "GLD": {
+      "cagr_pct": 11.93,
+      "sharpe": 1.425,
+      "max_drawdown_pct": 11.18,
+      "annual_volatility_pct": 8.14,
+      "mean_exposure_pct": 50.83,
+      "annual_turnover": 0.2
+    }
+  },
+  "studies": {
+    "sigmoid": {
+      "title": "Sigmoid 自适应仓位",
+      "short_label": "自适应仓位策略",
+      "source_label": "RUN 001 · GA / SEED 11",
+      "description": "21 日价格偏离与 63 日动量共同决定目标仓位。原研究按训练、验证、历史保留测试的顺序执行；GLD 原样使用 SPY 选定参数。",
+      "report_url": "https://github.com/Tao0503/QuantFlow/blob/main/RESEARCH_PROTOCOL.md",
+      "assets": {
+        "SPY": {
+          "metrics": {
+            "cagr_pct": 5.53,
+            "sharpe": 0.618,
+            "max_drawdown_pct": 13.39,
+            "annual_volatility_pct": 9.43,
+            "mean_exposure_pct": 52.86,
+            "annual_turnover": 0.37
+          },
+          "finding": "本区间策略的年化收益与夏普低于固定半仓，最大回撤也更大。这轮研究没有建立自适应信号带来额外改善的证据。"
+        },
+        "GLD": {
+          "metrics": {
+            "cagr_pct": 11.86,
+            "sharpe": 1.422,
+            "max_drawdown_pct": 10.25,
+            "annual_volatility_pct": 8.11,
+            "mean_exposure_pct": 49.74,
+            "annual_turnover": 0.5
+          },
+          "finding": "策略表现接近固定半仓，年化收益和夏普均略低。最大回撤虽较低，仍不足以据此认定策略具有稳定增量优势。"
+        }
+      }
+    },
+    "regime": {
+      "title": "固定趋势与波动率控制",
+      "short_label": "趋势＋波动控制",
+      "source_label": "REGIME STUDY · FIXED RULE",
+      "description": "价格高于 200 日 EMA 时，按过去 63 日波动率控制资产仓位，年化波动目标 10%。规则没有参数搜索；该独立复核是在原研究结果已知后进行的回溯分析。",
+      "report_url": "https://github.com/Tao0503/QuantFlow/blob/main/demo/regime_research.py",
+      "assets": {
+        "SPY": {
+          "metrics": {
+            "cagr_pct": 2.97,
+            "sharpe": 0.38,
+            "max_drawdown_pct": 16.68,
+            "annual_volatility_pct": 8.71,
+            "mean_exposure_pct": 57.16,
+            "annual_turnover": 6.65
+          },
+          "finding": "趋势与波动控制规则在 SPY 上的年化收益、夏普和最大回撤均逊于半仓基准，未达到固定的证据门槛。",
+          "uncertainty": {
+            "sharpe_delta": -0.292,
+            "ci_lower": -0.952,
+            "ci_upper": 0.433,
+            "confidence": 0.95,
+            "block_sessions": 20,
+            "replications": 5000,
+            "passes_evidence_gate": false
+          }
+        },
+        "GLD": {
+          "metrics": {
+            "cagr_pct": 15.58,
+            "sharpe": 1.525,
+            "max_drawdown_pct": 9.29,
+            "annual_volatility_pct": 9.81,
+            "mean_exposure_pct": 56.4,
+            "annual_turnover": 5.22
+          },
+          "finding": "GLD 上的收益与回撤有所改善，但夏普差的区间包含零，且差值未达到 0.20；本次结果未通过固定的证据门槛。",
+          "uncertainty": {
+            "sharpe_delta": 0.101,
+            "ci_lower": -0.31,
+            "ci_upper": 0.508,
+            "confidence": 0.95,
+            "block_sessions": 20,
+            "replications": 5000,
+            "passes_evidence_gate": false
+          }
+        }
+      }
+    }
+  }
+}
